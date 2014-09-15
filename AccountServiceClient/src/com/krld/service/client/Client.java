@@ -7,4 +7,8 @@ public interface Client {
     void init();
 
     void getAmount(int id);
+
+    void addAmount(int id, long value);
+
+    void runConcurrenceThreads(int rCount, int wCount, int[] idList);
 }
