@@ -10,9 +10,16 @@ import java.sql.SQLException;
 public class AccountServiceImpl extends UnicastRemoteObject implements AccountService {
 
     private DBManager dbManager;
+    private StatsManager statsManager;
 
     protected AccountServiceImpl() throws RemoteException {
         initDBManager();
+        initStatsManager();
+    }
+
+    private void initStatsManager() {
+        statsManager = new StatsManager();
+        statsManager.init();
     }
 
     private void initDBManager() {
@@ -22,11 +29,13 @@ public class AccountServiceImpl extends UnicastRemoteObject implements AccountSe
 
     @Override
     public Long getAmount(Integer id) throws RemoteException {
+        statsManager.incGetAmountCalls();
         return dbManager.getAmount(id);
     }
 
     @Override
     public void addAmount(Integer id, Long value) throws RemoteException {
+        statsManager.incAddAmountCalls();
         dbManager.addAmount(id, value);
     }
 }

@@ -6,6 +6,8 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Andrey on 9/14/2014.
@@ -13,6 +15,7 @@ import java.util.List;
 public class RmiClient implements Client {
     public static final String SERVICE_NAME = "AccountService";
     private static final long VALUE = 10;
+    public static final int THREADS_N = 40;
     private AccountService service;
 
     @Override
@@ -51,21 +54,17 @@ public class RmiClient implements Client {
 
     @Override
     public void runConcurrenceThreads(int rCount, int wCount, int[] idList) {
-        List<Thread> threadsPool = new ArrayList<>(rCount * idList.length + wCount * idList.length);
+        ExecutorService executor = Executors.newFixedThreadPool(THREADS_N);
         for (int i = 0; i < rCount; i++) {
             for (int id : idList) {
-                threadsPool.add(new Thread(new ReadRunnable(id)));
+                executor.execute(new ReadRunnable(id));
             }
         }
         for (int i = 0; i < rCount; i++) {
             for (int id : idList) {
-                threadsPool.add(new Thread(new WriteRunnable(id, VALUE)));
+                executor.execute(new WriteRunnable(id, VALUE));
             }
         }
-        for (Thread thread : threadsPool) {
-            thread.start();
-        }
-
     }
 
 
