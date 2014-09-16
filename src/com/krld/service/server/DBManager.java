@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -18,6 +19,7 @@ public class DBManager {
     private static final java.lang.String KEY_DB_PATH = "dbPath";
     public static final String KEY_DB_USERNAME = "username";
     private static final java.lang.String KEY_DB_PASSWORD = "password";
+    public static final String CONFIG_FILE_NAME = "config.properties";
     private Properties prop;
     private ComboPooledDataSource cpds;
 
@@ -43,7 +45,7 @@ public class DBManager {
 
     private void loadProperties() {
         prop = new Properties();
-        String fileName = "config.properties";
+        String fileName = CONFIG_FILE_NAME;
         if (!new File(fileName).exists()) {
             throw new RuntimeException("file: " + fileName + " not found!");
         }
@@ -77,11 +79,110 @@ public class DBManager {
     }
 
     public Long getAmount(Integer id) {
-        //TODO implement
+        Connection conn = null;
+        PreparedStatement prep = null;
+        ResultSet resultSet = null;
+        try {
+            conn = cpds.getConnection();
+            prep = conn.prepareStatement(SQLContract.SELECT_ACCOUNT_AMOUNT);
+            resultSet = prep.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getLong(0);
+            } else {
+                return 0L;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (prep != null) {
+                    prep.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         return null;
     }
 
     public void addAmount(Integer id, Long value) {
-        //TODO implement
+        Connection conn = null;
+        try {
+            conn = cpds.getConnection();
+            if (tryUpdateAmount(conn, id, value)) {
+                return;
+            }
+            if (tryInsertAmount(conn, id, value)) {
+                return;
+            }
+            if (!tryUpdateAmount(conn, id, value)) {
+                System.out.println("Update after trying insert, failed");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private boolean tryInsertAmount(Connection conn, Integer id, Long value) {
+        PreparedStatement prep = null;
+        try {
+            prep = conn.prepareStatement(SQLContract.INSERT_ACCOUNT_AMOUNT);
+            prep.setInt(1, id);
+            prep.setLong(2, value);
+            prep.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (prep != null) {
+                    prep.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    private boolean tryUpdateAmount(Connection conn, Integer id, Long value) {
+        PreparedStatement prep = null;
+        try {
+            prep = conn.prepareStatement(SQLContract.UPDATE_ACCOUNT_AMOUNT);
+            prep.setLong(1, value);
+            prep.setInt(2, id);
+            boolean result;
+            if (prep.executeUpdate() == 1) {
+                result = true;
+            } else {
+                result = false;
+            }
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (prep != null) {
+                    prep.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

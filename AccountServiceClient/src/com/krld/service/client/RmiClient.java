@@ -25,6 +25,7 @@ public class RmiClient implements Client {
             System.out.println("Get service!");
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException("Service not found!");
         }
     }
 
@@ -60,7 +61,7 @@ public class RmiClient implements Client {
                 executor.execute(new ReadRunnable(id));
             }
         }
-        for (int i = 0; i < rCount; i++) {
+        for (int i = 0; i < wCount; i++) {
             for (int id : idList) {
                 executor.execute(new WriteRunnable(id, VALUE));
             }

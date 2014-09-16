@@ -15,4 +15,8 @@ public class SQLContract {
             "WITH (" +
             "OIDS=FALSE" +
             ");";
+    public static final String SELECT_ACCOUNT_AMOUNT = "SELECT AMOUNT FROM " + TABLE_NAME + ";";
+    public static final String UPDATE_ACCOUNT_AMOUNT = "UPDATE " + TABLE_NAME + " SET AMOUNT = AMOUNT + ? " +
+            "WHERE ID = ?";
+    public static final java.lang.String INSERT_ACCOUNT_AMOUNT = "INSERT INTO " + TABLE_NAME + " (id, amount) VALUES (?, ?);";
 }
