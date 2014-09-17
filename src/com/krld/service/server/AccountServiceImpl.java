@@ -11,10 +11,17 @@ public class AccountServiceImpl extends UnicastRemoteObject implements AccountSe
 
     private DBManager dbManager;
     private StatsManager statsManager;
+    private CacheManager cacheManager;
 
     protected AccountServiceImpl() throws RemoteException {
         initDBManager();
         initStatsManager();
+        initCacheManager();
+    }
+
+    private void initCacheManager() {
+        cacheManager = new CacheManager();
+        cacheManager.init();
     }
 
     private void initStatsManager() {
@@ -30,12 +37,18 @@ public class AccountServiceImpl extends UnicastRemoteObject implements AccountSe
     @Override
     public Long getAmount(Integer id) throws RemoteException {
         statsManager.incGetAmountCalls();
-        return dbManager.getAmount(id);
+        Long amount = null;
+        amount = cacheManager.getAmount(id);
+        if (amount == null) {
+            amount = dbManager.getAmount(id);
+        }
+        return amount;
     }
 
     @Override
     public void addAmount(Integer id, Long value) throws RemoteException {
         statsManager.incAddAmountCalls();
         dbManager.addAmount(id, value);
+        cacheManager.addAmount(id, value);
     }
 }
