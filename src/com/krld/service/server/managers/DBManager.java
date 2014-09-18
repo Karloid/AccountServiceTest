@@ -17,7 +17,7 @@ public class DBManager {
     public void init(Properties prop) {
         cpds = new ComboPooledDataSource();
         try {
-            cpds.setDriverClass(prop.getProperty(DB_DRIVER)); //loads the jdbc driver
+            cpds.setDriverClass(prop.getProperty(DB_DRIVER));
 
             cpds.setJdbcUrl(prop.getProperty(DB_URL));
             cpds.setUser(prop.getProperty(DB_USERNAME));
@@ -36,33 +36,21 @@ public class DBManager {
         Connection connection = cpds.getConnection();
         executeUpdate(connection, SQLContract.DROP_TABLE);
         executeUpdate(connection, SQLContract.CREATE_TABLE);
+        connection.close();
     }
 
     private void executeUpdate(Connection connection, String sql) {
-        PreparedStatement prep = null;
-        try {
-            prep = connection.prepareStatement(sql);
+        try (PreparedStatement prep = connection.prepareStatement(sql)) {
             prep.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (prep != null) {
-                    prep.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     public Long getAmount(Integer id) {
-        Connection conn = null;
-        PreparedStatement prep = null;
         ResultSet resultSet = null;
-        try {
-            conn = cpds.getConnection();
-            prep = conn.prepareStatement(SQLContract.SELECT_ACCOUNT_AMOUNT);
+        try (Connection conn = cpds.getConnection();
+             PreparedStatement prep = conn.prepareStatement(SQLContract.SELECT_ACCOUNT_AMOUNT)) {
             prep.setInt(1, id);
             resultSet = prep.executeQuery();
             if (resultSet.next()) {
@@ -77,12 +65,6 @@ public class DBManager {
                 if (resultSet != null) {
                     resultSet.close();
                 }
-                if (prep != null) {
-                    prep.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -91,9 +73,7 @@ public class DBManager {
     }
 
     public void addAmount(Integer id, Long value) {
-        Connection conn = null;
-        try {
-            conn = cpds.getConnection();
+        try (Connection conn = cpds.getConnection()) {
             if (tryUpdateAmount(conn, id, value)) {
                 return;
             }
@@ -101,47 +81,27 @@ public class DBManager {
                 return;
             }
             if (!tryUpdateAmount(conn, id, value)) {
-                System.out.println("Update after trying insert, failed");
+                System.out.println("Update after trying insert, failed");  //TODO throw remote exception
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     private boolean tryInsertAmount(Connection conn, Integer id, Long value) {
-        PreparedStatement prep = null;
-        try {
-            prep = conn.prepareStatement(SQLContract.INSERT_ACCOUNT_AMOUNT);
+        try (PreparedStatement prep = conn.prepareStatement(SQLContract.INSERT_ACCOUNT_AMOUNT);){
             prep.setInt(1, id);
             prep.setLong(2, value);
             prep.executeUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (prep != null) {
-                    prep.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return false;
     }
 
     private boolean tryUpdateAmount(Connection conn, Integer id, Long value) {
-        PreparedStatement prep = null;
-        try {
-            prep = conn.prepareStatement(SQLContract.UPDATE_ACCOUNT_AMOUNT);
+        try (PreparedStatement prep = conn.prepareStatement(SQLContract.UPDATE_ACCOUNT_AMOUNT)){
             prep.setLong(1, value);
             prep.setInt(2, id);
             boolean result;
@@ -149,14 +109,6 @@ public class DBManager {
             return result;
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (prep != null) {
-                    prep.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return false;
     }
