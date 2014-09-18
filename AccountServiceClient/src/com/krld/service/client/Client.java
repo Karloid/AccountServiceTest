@@ -1,10 +1,12 @@
 package com.krld.service.client;
 
+import java.util.Properties;
+
 /**
  * Created by Andrey on 9/14/2014.
  */
 public interface Client {
-    void init();
+    void init(Properties prop);
 
     void getAmount(int id);
 

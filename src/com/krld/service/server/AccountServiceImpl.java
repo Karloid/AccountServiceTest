@@ -20,25 +20,11 @@ public class AccountServiceImpl extends UnicastRemoteObject implements AccountSe
     private CacheManager cacheManager;
     private Properties prop;
 
-    protected AccountServiceImpl() throws RemoteException {
-        loadProperties();
+    protected AccountServiceImpl(Properties prop) throws RemoteException {
+        this.prop = prop;
         initDBManager();
         initStatsManager();
         initCacheManager();
-    }
-
-    private void loadProperties() {
-            prop = new Properties();
-            String fileName = PropertiesContract.PROPERTIES_FILE_NAME;
-            if (!new File(fileName).exists()) {
-                throw new RuntimeException("Config file: " + fileName + " not found!");
-            }
-            try {
-                prop.load(new FileReader(fileName));
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Error while reading config file!");
-            }
     }
 
     private void initCacheManager() {

@@ -52,7 +52,7 @@ public class StatsManager {
                         "; getAmountCalls: " + getAmountCallsLastPeriod + "; total: " + totalCalls.get());
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 

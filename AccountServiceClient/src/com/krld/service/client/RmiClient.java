@@ -4,8 +4,7 @@ import com.krld.service.server.AccountService;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -14,13 +13,17 @@ import java.util.concurrent.Executors;
  */
 public class RmiClient implements Client {
     public static final String SERVICE_NAME = "AccountService";
-    private static final long VALUE = 10;
-    public static final int THREADS_N = 40;
+    public static final String W_VALUE = "wValue";
+    public static final String N_THREADS = "nThreads";
+    private long value;
+    public int nThreads;
     private AccountService service;
 
     @Override
-    public void init() {
+    public void init(Properties prop) {
         try {
+            value = Long.valueOf(prop.getProperty(W_VALUE));
+            nThreads = Integer.valueOf(prop.getProperty(N_THREADS));
             service = (AccountService) Naming.lookup(SERVICE_NAME);
             System.out.println("Get service!");
         } catch (Exception e) {
@@ -33,7 +36,6 @@ public class RmiClient implements Client {
     public void getAmount(int id) {
         try {
             Long amount = service.getAmount(id);
-         //   log("getAmount. id: " + id + "; amount:" + amount);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -43,21 +45,16 @@ public class RmiClient implements Client {
     public void addAmount(int id, long value) {
         try {
             service.addAmount(id, value);
-         //   log("addAmount. id: " + id + "; value:" + value);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-    }
-
-    private void log(String s) {
-        System.out.println(s);
     }
 
     @Override
     public void runConcurrenceThreads(int rCount, int wCount, int[] idList) {
         System.out.println("runConcurrenceThreads rCount: " + rCount + "; wCount: "
                 + wCount + "; idList.length(): " + idList.length);
-        ExecutorService executor = Executors.newFixedThreadPool(THREADS_N);
+        ExecutorService executor = Executors.newFixedThreadPool(nThreads);
         for (int i = 0; i < rCount; i++) {
             for (int id : idList) {
                 executor.execute(new ReadRunnable(id));
@@ -65,7 +62,7 @@ public class RmiClient implements Client {
         }
         for (int i = 0; i < wCount; i++) {
             for (int id : idList) {
-                executor.execute(new WriteRunnable(id, VALUE));
+                executor.execute(new WriteRunnable(id, value));
             }
         }
     }
@@ -95,7 +92,7 @@ public class RmiClient implements Client {
 
         @Override
         public void run() {
-           addAmount(id, value);
+            addAmount(id, value);
         }
     }
 }
