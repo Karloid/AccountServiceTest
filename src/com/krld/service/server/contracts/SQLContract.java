@@ -1,4 +1,4 @@
-package com.krld.service.server;
+package com.krld.service.server.contracts;
 
 /**
  * Created by Andrey on 9/16/2014.
@@ -15,8 +15,8 @@ public class SQLContract {
             "WITH (" +
             "OIDS=FALSE" +
             ");";
-    public static final String SELECT_ACCOUNT_AMOUNT = "SELECT AMOUNT FROM " + TABLE_NAME + ";";
-    public static final String UPDATE_ACCOUNT_AMOUNT = "UPDATE " + TABLE_NAME + " SET AMOUNT = AMOUNT + ? " +
-            "WHERE ID = ?";
+    public static final String SELECT_ACCOUNT_AMOUNT = "SELECT amount FROM " + TABLE_NAME + " WHERE id = ?;";
+    public static final String UPDATE_ACCOUNT_AMOUNT = "UPDATE " + TABLE_NAME + " SET amount = amount + ? " +
+            "WHERE id = ?";
     public static final java.lang.String INSERT_ACCOUNT_AMOUNT = "INSERT INTO " + TABLE_NAME + " (id, amount) VALUES (?, ?);";
 }

@@ -12,9 +12,15 @@ public class ClientLauncher {
         System.out.println("Launch client");
         Client client = new RmiClient();
         client.init();
-        int rCount = 0;
-        int wCount = 100;
-        int[] idList = new int[]{10,20,30,40,50};
+        int rCount;
+        int wCount;
+        rCount = 100;
+        wCount = 10;
+        int idListSize = 5000;
+        int[] idList = new int[idListSize];
+        for (int i = 0; i< idListSize; i++) {
+            idList[i] = i /*+ (int)(Math.random() * 20)*/;
+        }
         client.runConcurrenceThreads(rCount, wCount, idList);
     }
 }

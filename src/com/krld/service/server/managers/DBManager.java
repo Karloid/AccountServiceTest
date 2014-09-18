@@ -1,57 +1,37 @@
-package com.krld.service.server;
+package com.krld.service.server.managers;
 
+import com.krld.service.server.contracts.PropertiesContract;
+import com.krld.service.server.contracts.SQLContract;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import static com.krld.service.server.contracts.PropertiesContract.*;
+
 /**
  * Created by Andrey on 9/16/2014.
  */
 public class DBManager {
-    public static final String KEY_DB_DRIVER = "dbDriver";
-    private static final java.lang.String KEY_DB_PATH = "dbPath";
-    public static final String KEY_DB_USERNAME = "username";
-    private static final java.lang.String KEY_DB_PASSWORD = "password";
-    public static final String CONFIG_FILE_NAME = "config.properties";
-    private Properties prop;
     private ComboPooledDataSource cpds;
 
-    public void init() {
-        loadProperties();
+    public void init(Properties prop) {
         cpds = new ComboPooledDataSource();
         try {
-            cpds.setDriverClass(prop.getProperty(KEY_DB_DRIVER)); //loads the jdbc driver
+            cpds.setDriverClass(prop.getProperty(DB_DRIVER)); //loads the jdbc driver
 
-            cpds.setJdbcUrl(prop.getProperty(KEY_DB_PATH));
-            cpds.setUser(prop.getProperty(KEY_DB_USERNAME));
-            cpds.setPassword(prop.getProperty(KEY_DB_PASSWORD));
+            cpds.setJdbcUrl(prop.getProperty(DB_URL));
+            cpds.setUser(prop.getProperty(DB_USERNAME));
+            cpds.setPassword(prop.getProperty(DB_PASSWORD));
 
-            cpds.setMinPoolSize(5);
-            cpds.setAcquireIncrement(5);
-            cpds.setMaxPoolSize(20);
+            cpds.setMinPoolSize(Integer.valueOf(prop.getProperty(CACHE_MIN_POOL_SIZE)));
+            cpds.setAcquireIncrement(Integer.valueOf(prop.getProperty(CACHE_ACQUIRE_INCREMENT)));
+            cpds.setMaxPoolSize(Integer.valueOf(prop.getProperty(PropertiesContract.CACHE_MAX_POOL_SIZE)));
             createTable();
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private void loadProperties() {
-        prop = new Properties();
-        String fileName = CONFIG_FILE_NAME;
-        if (!new File(fileName).exists()) {
-            throw new RuntimeException("file: " + fileName + " not found!");
-        }
-        try {
-            prop.load(new FileReader(fileName));
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -85,9 +65,10 @@ public class DBManager {
         try {
             conn = cpds.getConnection();
             prep = conn.prepareStatement(SQLContract.SELECT_ACCOUNT_AMOUNT);
+            prep.setInt(1, id);
             resultSet = prep.executeQuery();
             if (resultSet.next()) {
-                return resultSet.getLong(0);
+                return resultSet.getLong(1);
             } else {
                 return 0L;
             }

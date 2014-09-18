@@ -33,7 +33,7 @@ public class RmiClient implements Client {
     public void getAmount(int id) {
         try {
             Long amount = service.getAmount(id);
-            log("getAmount. id: " + id + "; amount:" + amount);
+         //   log("getAmount. id: " + id + "; amount:" + amount);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -43,7 +43,7 @@ public class RmiClient implements Client {
     public void addAmount(int id, long value) {
         try {
             service.addAmount(id, value);
-            log("addAmount. id: " + id + "; value:" + value);
+         //   log("addAmount. id: " + id + "; value:" + value);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

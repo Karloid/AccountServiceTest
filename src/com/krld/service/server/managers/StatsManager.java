@@ -1,5 +1,6 @@
-package com.krld.service.server;
+package com.krld.service.server.managers;
 
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -13,7 +14,7 @@ public class StatsManager {
     private int addAmountCallsLastPeriod;
     private int getAmountCallsLastPeriod;
 
-    public void init() {
+    public void init(Properties prop) {
         updateFreq = 10000;
         addAmountCalls = new AtomicInteger(0);
         getAmountCalls = new AtomicInteger(0);
