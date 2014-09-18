@@ -5,15 +5,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
-/**
- * Created by Andrey on 9/14/2014.
- */
 public class ClientLauncher {
     private static final String PROPERTIES_FILE_NAME = "client.properties";
     private static final String R_COUNT = "rCount";
     private static final String W_COUNT = "wCount";
     private static final String ID_LIST = "idList";
-    public static final String SPLITTER = ":";
+    private static final String SPLITTER = ":";
 
     public static void main(String[] args) {
         launchClient();

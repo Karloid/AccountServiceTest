@@ -1,7 +1,5 @@
 package com.krld.service.server.managers;
 
-import com.krld.service.server.contracts.PropertiesContract;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;

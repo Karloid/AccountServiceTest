@@ -1,13 +1,9 @@
 package com.krld.service.server;
 
-import com.krld.service.server.contracts.PropertiesContract;
 import com.krld.service.server.managers.CacheManager;
 import com.krld.service.server.managers.DBManager;
 import com.krld.service.server.managers.StatsManager;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Properties;
@@ -20,7 +16,7 @@ public class AccountServiceImpl extends UnicastRemoteObject implements AccountSe
     private CacheManager cacheManager;
     private Properties prop;
 
-    protected AccountServiceImpl(Properties prop) throws RemoteException {
+    AccountServiceImpl(Properties prop) throws RemoteException {
         this.prop = prop;
         initDBManager();
         initStatsManager();

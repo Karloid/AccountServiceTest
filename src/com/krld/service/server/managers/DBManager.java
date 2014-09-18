@@ -1,6 +1,5 @@
 package com.krld.service.server.managers;
 
-import com.krld.service.server.contracts.PropertiesContract;
 import com.krld.service.server.contracts.SQLContract;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
@@ -12,9 +11,6 @@ import java.util.Properties;
 
 import static com.krld.service.server.contracts.PropertiesContract.*;
 
-/**
- * Created by Andrey on 9/16/2014.
- */
 public class DBManager {
     private ComboPooledDataSource cpds;
 
@@ -43,15 +39,17 @@ public class DBManager {
     }
 
     private void executeUpdate(Connection connection, String sql) {
-        PreparedStatement preparedStatement = null;
+        PreparedStatement prep = null;
         try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.executeUpdate();
+            prep = connection.prepareStatement(sql);
+            prep.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
-                preparedStatement.close();
+                if (prep != null) {
+                    prep.close();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -147,11 +145,7 @@ public class DBManager {
             prep.setLong(1, value);
             prep.setInt(2, id);
             boolean result;
-            if (prep.executeUpdate() == 1) {
-                result = true;
-            } else {
-                result = false;
-            }
+            result = prep.executeUpdate() == 1;
             return result;
         } catch (SQLException e) {
             e.printStackTrace();

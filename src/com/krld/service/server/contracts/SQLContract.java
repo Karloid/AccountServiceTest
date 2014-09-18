@@ -1,10 +1,7 @@
 package com.krld.service.server.contracts;
 
-/**
- * Created by Andrey on 9/16/2014.
- */
 public class SQLContract {
-    public static final String TABLE_NAME = "accounts";
+    private static final String TABLE_NAME = "accounts";
     public static final String DROP_TABLE = "DROP TABLE " + TABLE_NAME + ";";
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +
             "(" +

@@ -1,8 +1,5 @@
 package com.krld.service.server.contracts;
 
-/**
- * Created by Andrey on 9/18/2014.
- */
 public class PropertiesContract {
     public static final String DB_DRIVER = "dbDriver";
     public static final String DB_URL = "dbUrl";

@@ -5,18 +5,14 @@ import com.krld.service.server.contracts.PropertiesContract;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.rmi.Naming;
-import java.rmi.RMISecurityManager;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 import java.security.Permission;
 import java.util.Properties;
 
 public class ServerLauncher {
 
-    public static final String SERVICE_NAME = "AccountService";
+    private static final String SERVICE_NAME = "AccountService";
 
     public static void main(String[] args) {
         launchServer();

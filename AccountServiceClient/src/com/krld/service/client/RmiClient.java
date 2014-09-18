@@ -8,15 +8,12 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Created by Andrey on 9/14/2014.
- */
 public class RmiClient implements Client {
-    public static final String SERVICE_NAME = "AccountService";
-    public static final String W_VALUE = "wValue";
-    public static final String N_THREADS = "nThreads";
+    private static final String SERVICE_NAME = "AccountService";
+    private static final String W_VALUE = "wValue";
+    private static final String N_THREADS = "nThreads";
     private long value;
-    public int nThreads;
+    private int nThreads;
     private AccountService service;
 
     @Override
@@ -32,7 +29,6 @@ public class RmiClient implements Client {
         }
     }
 
-    @Override
     public void getAmount(int id) {
         try {
             Long amount = service.getAmount(id);
@@ -41,7 +37,6 @@ public class RmiClient implements Client {
         }
     }
 
-    @Override
     public void addAmount(int id, long value) {
         try {
             service.addAmount(id, value);

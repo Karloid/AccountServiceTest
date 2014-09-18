@@ -1,15 +1,10 @@
 package com.krld.service.server.managers;
 
-import com.krld.service.server.contracts.PropertiesContract;
-
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.krld.service.server.contracts.PropertiesContract.*;
 
-/**
- * Created by Andrey on 9/16/2014.
- */
 public class StatsManager {
     private AtomicInteger addAmountCalls;
     private AtomicInteger getAmountCalls;
@@ -38,7 +33,7 @@ public class StatsManager {
                 e.printStackTrace();
             }
         }
-        runner = new Thread(() -> updateLoop());
+        runner = new Thread(this::updateLoop);
         runner.start();
     }
 
