@@ -20,4 +20,9 @@ public interface AccountService extends Remote {
      */
     void addAmount(Integer id, Long value) throws RemoteException;
 
+    /**
+     * Resets statistics
+     */
+    void resetStats() throws RemoteException;
+
 }

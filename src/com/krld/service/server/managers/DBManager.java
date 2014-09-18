@@ -29,7 +29,7 @@ public class DBManager {
 
             cpds.setMinPoolSize(Integer.valueOf(prop.getProperty(CACHE_MIN_POOL_SIZE)));
             cpds.setAcquireIncrement(Integer.valueOf(prop.getProperty(CACHE_ACQUIRE_INCREMENT)));
-            cpds.setMaxPoolSize(Integer.valueOf(prop.getProperty(PropertiesContract.CACHE_MAX_POOL_SIZE)));
+            cpds.setMaxPoolSize(Integer.valueOf(prop.getProperty(CACHE_MAX_POOL_SIZE)));
             createTable();
         } catch (Exception e) {
             e.printStackTrace();

@@ -7,13 +7,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import static com.krld.service.server.contracts.PropertiesContract.*;
+
 public class CacheManager {
 
     private Map<Integer, Long> cacheMap;
 
 
     public void init(Properties prop) {
-        int maxEntries = Integer.valueOf(prop.getProperty(PropertiesContract.CACHE_MAX_ENTRIES));
+        int maxEntries = Integer.valueOf(prop.getProperty(CACHE_MAX_ENTRIES));
         cacheMap = Collections.synchronizedMap(new LinkedHashMap<Integer, Long>(maxEntries + 1, 1.0f, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry<Integer, Long> eldest) {

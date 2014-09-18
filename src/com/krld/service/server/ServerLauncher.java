@@ -30,7 +30,7 @@ public class ServerLauncher {
 
     private static void initSecurityManager() {
         if (System.getSecurityManager() == null) {
-            System.setSecurityManager (new RMISecurityManager() {
+            System.setSecurityManager (new SecurityManager() {
                 public void checkConnect(String host, int port) {
                 }
 

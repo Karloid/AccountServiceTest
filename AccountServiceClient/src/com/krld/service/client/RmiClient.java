@@ -55,6 +55,8 @@ public class RmiClient implements Client {
 
     @Override
     public void runConcurrenceThreads(int rCount, int wCount, int[] idList) {
+        System.out.println("runConcurrenceThreads rCount: " + rCount + "; wCount: "
+                + wCount + "; idList.length(): " + idList.length);
         ExecutorService executor = Executors.newFixedThreadPool(THREADS_N);
         for (int i = 0; i < rCount; i++) {
             for (int id : idList) {

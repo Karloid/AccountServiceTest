@@ -75,4 +75,9 @@ public class AccountServiceImpl extends UnicastRemoteObject implements AccountSe
         }
         dbManager.addAmount(id, value);
     }
+
+    @Override
+    public void resetStats() throws RemoteException {
+        statsManager.reset();
+    }
 }

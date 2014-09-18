@@ -1,7 +1,11 @@
 package com.krld.service.server.managers;
 
+import com.krld.service.server.contracts.PropertiesContract;
+
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.krld.service.server.contracts.PropertiesContract.*;
 
 /**
  * Created by Andrey on 9/16/2014.
@@ -9,15 +13,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class StatsManager {
     private AtomicInteger addAmountCalls;
     private AtomicInteger getAmountCalls;
+    private AtomicInteger totalCalls;
     private int updateFreq;
     private Thread runner;
     private int addAmountCallsLastPeriod;
     private int getAmountCallsLastPeriod;
+    private Properties prop;
 
     public void init(Properties prop) {
-        updateFreq = 10000;
+        this.prop = prop;
+        updateFreq = Integer.valueOf(prop.getProperty(STATS_UPDATE_FREQUENCY));
         addAmountCalls = new AtomicInteger(0);
         getAmountCalls = new AtomicInteger(0);
+        totalCalls = new AtomicInteger(0);
         startRunner();
     }
 
@@ -40,23 +48,29 @@ public class StatsManager {
                 Thread.sleep(updateFreq);
                 addAmountCallsLastPeriod = addAmountCalls.getAndSet(0);
                 getAmountCallsLastPeriod = getAmountCalls.getAndSet(0);
-                long total = getAmountCallsLastPeriod + addAmountCallsLastPeriod;
-                float seconds = updateFreq / 1000f;
-                System.out.println("addAmount: " + addAmountCallsLastPeriod +
-                        "; getAmount: " + getAmountCallsLastPeriod + " total: " + total
-                        + "; average time: " + Math.floor(updateFreq / (total +1))
-                        + "ms; period: " + seconds + " seconds");
+                log("addAmountCalls: " + addAmountCallsLastPeriod +
+                        "; getAmountCalls: " + getAmountCallsLastPeriod + "; total: " + totalCalls.get());
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
+    private void log(String s) {
+        System.out.println(s);
+    }
+
     public void incGetAmountCalls() {
         getAmountCalls.incrementAndGet();
+        totalCalls.incrementAndGet();
     }
 
     public void incAddAmountCalls() {
         addAmountCalls.incrementAndGet();
+        totalCalls.incrementAndGet();
+    }
+
+    public void reset() {
+        init(prop);
     }
 }
