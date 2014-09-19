@@ -10,9 +10,11 @@ import java.rmi.registry.Registry;
 import java.security.Permission;
 import java.util.Properties;
 
+import static com.krld.service.server.contracts.PropertiesContract.*;
+
 public class ServerLauncher {
 
-    private static final String SERVICE_NAME = "AccountService";
+
 
     public static void main(String[] args) {
         launchServer();
@@ -21,12 +23,15 @@ public class ServerLauncher {
     private static void launchServer() {
         initSecurityManager();
         try {
-            AccountService service = new AccountServiceImpl(loadProperties());
-            Registry registry = LocateRegistry.getRegistry();
+            Properties prop = loadProperties();
+            AccountService service = new AccountServiceImpl(prop);
+            Registry registry = LocateRegistry.getRegistry(prop.getProperty(RMI_HOSTNAME),
+                    Integer.valueOf(prop.getProperty(PropertiesContract.RMI_PORT)));
             registry.rebind(SERVICE_NAME, service);
             System.out.println("Server rebind!");
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException("Cannot connect to rmiregistry!");
         }
     }
 
@@ -51,7 +56,7 @@ public class ServerLauncher {
 
     private static Properties loadProperties() {
         Properties prop = new Properties();
-        String fileName = PropertiesContract.PROPERTIES_FILE_NAME;
+        String fileName = PROPERTIES_FILE_NAME;
         if (!new File(fileName).exists()) {
             throw new RuntimeException("Properties file: " + fileName + " not found!");
         }

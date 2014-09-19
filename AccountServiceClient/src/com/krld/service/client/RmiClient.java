@@ -8,7 +8,7 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class RmiClient implements Client {
+public class RmiClient {
     private static final String SERVICE_NAME = "AccountService";
     private static final String W_VALUE = "wValue";
     private static final String N_THREADS = "nThreads";
@@ -16,16 +16,15 @@ public class RmiClient implements Client {
     private int nThreads;
     private AccountService service;
 
-    @Override
-    public void init(Properties prop) {
+    public void init(Properties prop, AccountService service) {
         try {
             value = Long.valueOf(prop.getProperty(W_VALUE));
             nThreads = Integer.valueOf(prop.getProperty(N_THREADS));
-            service = (AccountService) Naming.lookup(SERVICE_NAME);
-            System.out.println("Get service!");
+            this.service = service;
+
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Service not found!");
+
         }
     }
 
@@ -45,7 +44,6 @@ public class RmiClient implements Client {
         }
     }
 
-    @Override
     public void runConcurrenceThreads(int rCount, int wCount, int[] idList) {
         System.out.println("runConcurrenceThreads rCount: " + rCount + "; wCount: "
                 + wCount + "; idList.length(): " + idList.length);

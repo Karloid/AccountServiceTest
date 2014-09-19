@@ -11,4 +11,6 @@ public class PropertiesContract {
     public static final String CACHE_ACQUIRE_INCREMENT = "cacheAcquireIncrement";
     public static final String CACHE_MAX_POOL_SIZE = "cacheMaxPoolSize";
     public static final String STATS_UPDATE_FREQUENCY = "statsUpdateFrequencyMs";
+    public static final String RMI_HOSTNAME = "hostname";
+    public static final String RMI_PORT = "port";
 }
