@@ -109,7 +109,7 @@ public class DBManager {
     }
 
     private boolean tryInsertAmount(Connection conn, Integer id, Long value) {
-        try (PreparedStatement prep = conn.prepareStatement(SQLContract.INSERT_ACCOUNT_AMOUNT);) {
+        try (PreparedStatement prep = conn.prepareStatement(SQLContract.INSERT_ACCOUNT_AMOUNT)) {
             prep.setInt(1, id);
             prep.setLong(2, value);
             prep.executeUpdate();

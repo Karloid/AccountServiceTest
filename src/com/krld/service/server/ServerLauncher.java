@@ -32,11 +32,10 @@ public class ServerLauncher {
 
     private static void initSecurityManager() {
         if (System.getSecurityManager() == null) {
-            System.setSecurityManager (new SecurityManager() {
-                public void checkConnect(String host, int port) {
-                }
+            System.setSecurityManager(new SecurityManager() {
 
-                public void checkConnect(String host, int port, Object context) {
+                @Override
+                public void checkConnect(String host, int port) {
                 }
 
                 @Override
@@ -47,20 +46,20 @@ public class ServerLauncher {
                 public void checkPermission(Permission perm, Object context) {
                 }
             });
-         }
+        }
     }
 
     private static Properties loadProperties() {
         Properties prop = new Properties();
         String fileName = PropertiesContract.PROPERTIES_FILE_NAME;
         if (!new File(fileName).exists()) {
-            throw new RuntimeException("Config file: " + fileName + " not found!");
+            throw new RuntimeException("Properties file: " + fileName + " not found!");
         }
         try {
             prop.load(new FileReader(fileName));
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Error while reading config file!");
+            throw new RuntimeException("Error while reading properties file!");
         }
         return prop;
     }

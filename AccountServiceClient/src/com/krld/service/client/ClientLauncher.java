@@ -37,13 +37,13 @@ public class ClientLauncher {
         Properties prop = new Properties();
         String fileName = PROPERTIES_FILE_NAME;
         if (!new File(fileName).exists()) {
-            throw new RuntimeException("Config file: " + fileName + " not found!");
+            throw new RuntimeException("Properties file: " + fileName + " not found!");
         }
         try {
             prop.load(new FileReader(fileName));
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Error while reading config file!");
+            throw new RuntimeException("Error while reading properties file!");
         }
         return prop;
     }
