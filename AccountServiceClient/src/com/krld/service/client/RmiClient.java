@@ -60,6 +60,7 @@ public class RmiClient implements Client {
                 executor.execute(new WriteRunnable(id, value));
             }
         }
+        executor.shutdown();
     }
 
 
