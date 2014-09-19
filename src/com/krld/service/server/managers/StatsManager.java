@@ -6,11 +6,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.krld.service.server.contracts.PropertiesContract.*;
 
 public class StatsManager {
-    private AtomicInteger addAmountCalls;
-    private AtomicInteger getAmountCalls;
-    private AtomicInteger totalCalls;
     private int updateFreq;
     private Thread runner;
+    private AtomicInteger addAmountCalls;
+    private AtomicInteger getAmountCalls;
+    private int addAmountCallsTotal;
+    private int getAmountCallsTotal;
     private int addAmountCallsLastPeriod;
     private int getAmountCallsLastPeriod;
     private Properties prop;
@@ -20,7 +21,8 @@ public class StatsManager {
         updateFreq = Integer.valueOf(prop.getProperty(STATS_UPDATE_FREQUENCY));
         addAmountCalls = new AtomicInteger(0);
         getAmountCalls = new AtomicInteger(0);
-        totalCalls = new AtomicInteger(0);
+        addAmountCallsTotal = 0;
+        getAmountCallsTotal = 0;
         startRunner();
     }
 
@@ -43,8 +45,13 @@ public class StatsManager {
                 Thread.sleep(updateFreq);
                 addAmountCallsLastPeriod = addAmountCalls.getAndSet(0);
                 getAmountCallsLastPeriod = getAmountCalls.getAndSet(0);
+                addAmountCallsTotal = addAmountCallsTotal + addAmountCallsLastPeriod;
+                getAmountCallsTotal = getAmountCallsTotal + getAmountCallsLastPeriod;
                 log("addAmountCalls: " + addAmountCallsLastPeriod +
-                        "; getAmountCalls: " + getAmountCallsLastPeriod + "; total: " + totalCalls.get());
+                        "; getAmountCalls: " + getAmountCallsLastPeriod +
+                        "; addAmountCallsTotal: " + addAmountCallsTotal +
+                        "; getAmountCallsTotal: " + getAmountCallsTotal
+                );
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -57,12 +64,10 @@ public class StatsManager {
 
     public void incGetAmountCalls() {
         getAmountCalls.incrementAndGet();
-        totalCalls.incrementAndGet();
     }
 
     public void incAddAmountCalls() {
         addAmountCalls.incrementAndGet();
-        totalCalls.incrementAndGet();
     }
 
     public void reset() {

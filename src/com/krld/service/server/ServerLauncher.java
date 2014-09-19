@@ -5,9 +5,11 @@ import com.krld.service.server.contracts.PropertiesContract;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.security.Permission;
 import java.util.Properties;
 
@@ -27,18 +29,13 @@ public class ServerLauncher {
             Properties prop = loadProperties();
             Registry registry = LocateRegistry.getRegistry(prop.getProperty(RMI_HOSTNAME),
                     Integer.valueOf(prop.getProperty(PropertiesContract.RMI_PORT)));
-            isAlive(registry);
             AccountService service = new AccountServiceImpl(prop);
             registry.rebind(SERVICE_NAME, service);
             System.out.println("Server rebind!");
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Cannot connect to rmiregistry!");
+            System.exit(42);
         }
-    }
-
-    private static void isAlive(Registry registry) throws RemoteException {
-        registry.list();
     }
 
     private static void initSecurityManager() {
